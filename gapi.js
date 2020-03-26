@@ -53,7 +53,6 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = 'inline';
     document.getElementById("submit").classList.remove("disabled");
     document.getElementById("submit").classList.add("button-primary");
-    listFiles();
   } else {
     authorizeButton.style.display = 'inline';
     signoutButton.style.display = 'none';
@@ -111,6 +110,7 @@ function appendPre(message) {
 
 // Upload Test File
 function createFolder(name) {
+  console.log("Creating new folder: "+name);
   metadata = {
     "name" : name,
     "mimeType" : "application/vnd.google-apps.folder"
@@ -120,10 +120,13 @@ function createFolder(name) {
     fields: "id"
   }, function(err, data) {
     if (err) {
+      console.log("Failed! "+err);
       appendPre(err);
     } else {
+      console.log("Success! "+data);
       appendPre("Created folder '"+name+"', ID:"+data.id);
     }
 
-  })
+  });
+  console.log("bye!");
 }
