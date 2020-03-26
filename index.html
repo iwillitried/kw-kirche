@@ -2,12 +2,13 @@
 <html lang="">
 
 <head>
-  
+
   <script src="p5/p5.js"></script>
   <script src="p5/addons/p5.sound.min.js"></script>
   <script src="sketch.js"></script>
 
   <link rel="stylesheet" href="">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>p5.js example</title>
@@ -30,7 +31,7 @@
 
       display: grid;
       grid-template-columns: 1fr 350px;
-      grid-template-rows: 1fr 1fr 1fr;
+      grid-template-rows: 300px 1fr 50px;
     }
 
     #header {
@@ -63,8 +64,8 @@
     }
 
     #head_right img {
-      width:200px;
-      height:200px;
+      width:150px;
+      height:150px;
       float: right;
     }
 
@@ -79,7 +80,7 @@
 
     #trackbox {
       margin-left: 15px;
-      border-style: inset;
+      border: 1px solid grey;
       /* float: right;
       width:350px; */
       /* background-color: yellow; */
@@ -94,7 +95,7 @@
 
     .trackField {
       height: 100px;
-      border-bottom: 3px solid grey;
+      border-bottom: 1px solid grey;
     }
 
     .trackField button{
@@ -102,13 +103,13 @@
       float: right;
       margin-top: 30px;
       margin-left: 20px;
-      font-size: 30px;
+      font-size: 20px;
     }
     .trackField p {
       float: left;
       margin-top: 30px;
       margin-left: 20px;
-      font-size: 25px;
+      font-size: 18px;
     }
   </style>
 
@@ -166,18 +167,6 @@
     <div id="trackbox">
       <div class="trackField">
         <p>Track 01</p>
-        <button class="button button-clear">+</button>
-      </div>
-      <div class="trackField">
-        <p>Track 02</p>
-        <button class="button button-clear">+</button>
-      </div>
-      <div class="trackField">
-        <p>Track 03</p>
-        <button class="button button-clear">+</button>
-      </div>
-      <div class="trackField">
-        <p>Track 04</p>
         <button class="button button-clear">+</button>
       </div>
     </div>
