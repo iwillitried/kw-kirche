@@ -10,6 +10,10 @@ const submitButton = document.getElementById("submit") // Listener to submitClic
 
 
 function submitClicked() {
+  // If Button is disabled, ignore event
+  if (submitButton.className == "disabled") return;
+
+  createFolder(nameField.value); 
   var data = {
     "album" : {
       "meta" : {
@@ -25,6 +29,8 @@ function submitClicked() {
       }
     }
   }
+
+
 
   // googleAuth.signIn();
   // initClient();
