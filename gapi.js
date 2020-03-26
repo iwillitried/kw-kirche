@@ -91,20 +91,39 @@ function appendPre(message) {
 /**
  * Print files.
  */
-function listFiles() {
-  gapi.client.drive.files.list({
-    'pageSize': 10,
-    'fields': "nextPageToken, files(id, name)"
-  }).then(function(response) {
-    appendPre('Files:');
-    var files = response.result.files;
-    if (files && files.length > 0) {
-      for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        appendPre(file.name + ' (' + file.id + ')');
-      }
+// function listFiles() {
+//   gapi.client.drive.files.list({
+//     'pageSize': 10,
+//     'fields': "nextPageToken, files(id, name)"
+//   }).then(function(response) {
+//     appendPre('Files:');
+//     var files = response.result.files;
+//     if (files && files.length > 0) {
+//       for (var i = 0; i < files.length; i++) {
+//         var file = files[i];
+//         appendPre(file.name + ' (' + file.id + ')');
+//       }
+//     } else {
+//       appendPre('No files found.');
+//     }
+//   });
+// }
+
+// Upload Test File
+function createFolder(name) {
+  metadata = {
+    "name" : name,
+    "mimeType" : "application/vnd.google-apps.folder"
+  }
+  gapi.client.drive.files.create({
+    resource: metadata,
+    fields: "id"
+  }, function(err, data) {
+    if (err) {
+      appendPre(err);
     } else {
-      appendPre('No files found.');
+      appendPre("Created folder '"+name+"', ID:"+data.id);
     }
-  });
+
+  })
 }
