@@ -1,5 +1,5 @@
 // Client ID and API key from the Developer Console
-var _CLIENT_ID = '846572114213-i9cln7pon8lindenqmeqibpsl6a142cd.apps.googleusercontent.com'
+var _CLIENT_ID = '156773008755-chs8t1iiju7uhsfn3hk991ec9bbbnd59.apps.googleusercontent.com'
 var API_KEY = 'AIzaSyAeB1lf1TBN06BviOEim5dXrLsVVDoPIOI';
 
 // Array of API discovery doc URLs for APIs used by the quickstart
@@ -48,9 +48,6 @@ function initClient() {
  *  appropriately. After a sign-in, the API is called.
  */
 function updateSigninStatus(isSignedIn) {
-  const submitButton = document.getElementById("submit");
-  console.log("Buttons!");
-  console.log("Submit Button:"+submitButton);
   if (isSignedIn) {
     authorizeButton.style.display = 'none';
     signoutButton.style.display = 'inline';
