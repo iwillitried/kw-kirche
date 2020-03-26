@@ -3,9 +3,6 @@
 
 <head>
 
-  <!-- <script src="p5/p5.js"></script>
-  <script src="p5/addons/p5.sound.min.js"></script> -->
-
 
   <link rel="stylesheet" href="">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
@@ -82,10 +79,19 @@
 
     #fussbereich {
       clear: both;
+      width: auto;
+      margin-top: 30px;
       /* background-color:darkblue; */
       grid-column-start: 1;
-      grid-column-end: 3;
+      grid-column-end: 1;
     }
+
+    #fussbereich button {
+      display: inline;
+    }
+
+
+
 
     .trackField {
       height: 60px;
@@ -167,6 +173,9 @@
 
     <div id="fussbereich">
       <button class="button-primary" id="submit" onclick="submitClicked()">Speichern!</button>
+      <button id="authorize_button" style="display: none;">Authorize</button>
+      <button id="signout_button" style="display: none;">Sign Out</button>
+      <pre id="content"></pre>
     </div>
   </div>
 
@@ -176,8 +185,9 @@
 
 
 
-
   <script src="index.js"></script>
+  <script src="gapi.js"></script>
+  <script async="" defer="" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()" src="https://apis.google.com/js/api.js"></script>
 </body>
 
 
