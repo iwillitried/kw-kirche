@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <!-- milligram -->
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css">
+  <script src="p5/p5.js"></script>
+  <script src="p5/addons/p5.sound.min.js"></script>
+  <script src="sketch.js"></script>
+
+  <link rel="stylesheet" href="">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>p5.js example</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0px auto;
+    }
+
+    #sketch-holder {
+      position: absolute;
+      z-index: 1;
+    }
+
+    #page {
+      position: absolute;
+      z-index: 0;
+      width: auto;
+      margin: 30px;
+
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      grid-template-rows: 1fr 1fr 1fr;
+    }
+
+    #header {
+      grid-column-start: 1;
+      grid-column-end: 3;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      grid-template-rows: 100px 1fr;
+      /* background-color:lightblue; */
+
+
+
+    }
+
+    #head_top {
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+
+    #head_left {
+
+      grid-column-start: 1;
+      grid-column-end: 1;
+    }
+
+    #head_right {
+      margin-left: 30px;
+      grid-column-start: 2;
+      grid-column-end: 2;
+    }
+
+    #head_right img {
+      width:200px;
+      height:200px;
+      float: right;
+    }
+
+    #head_right button {
+      float: right;
+    }
+
+    #main {
+      /* background-color: lightgreen; */
+      /* margin-right: 350px; */
+    }
+
+    #trackbox {
+      margin-left: 15px;
+      border-style: inset;
+      /* float: right;
+      width:350px; */
+      /* background-color: yellow; */
+    }
+
+    #fussbereich {
+      clear: both;
+      /* background-color:darkblue; */
+      grid-column-start: 1;
+      grid-column-end: 3;
+    }
+
+    .trackField {
+      height: 100px;
+      border-bottom: 3px solid grey;
+    }
+
+    .trackField button{
+
+      float: right;
+      margin-top: 30px;
+      margin-left: 20px;
+      font-size: 30px;
+    }
+    .trackField p {
+      float: left;
+      margin-top: 30px;
+      margin-left: 20px;
+      font-size: 25px;
+    }
+  </style>
+
+</head>
+
+
+
+<body>
+
+  <div id="sketch-holder">
+      <!-- Our sketch will go here! -->
+  </div>
+
+  <div id="page">
+    <div id="header">
+      <div id=head_top><h1>Neues Album hinzufügen</h1></div>
+
+      <div id="head_left">
+        <label for="nameField">Albumtitel</label>
+        <input type="text" placeholder="Titel" id="albumTitelInput">
+      </div>
+
+      <div id="head_right">
+        <img src="artwork_placeholder.jpeg" alt="Artwork" style=" ">
+        <div id="file_picker">
+          <form action="upload.php" method="post" enctype="multipart/form-data">
+              <label>Albumcover wählen</label>
+              <input type="file" name="fileToUpload" id="fileToUpload">
+              <input type="submit" value="Bild verwenden" name="submit">
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="main">
+      <label for="artistField">Künstler</label>
+      <input type="text" placeholder="Künstler" id="artistField" height="40" width="10">
+
+      <label for="priceField">Preis inkl. Mwst.</label>
+      <input type="text" placeholder="Preis" id="priceField" height="40" width="10">
+
+      <label for="durationField">Album Länge</label>
+      <input type="text" placeholder="Länge" id="durationField" height="40" width="10">
+
+      <label for="tracksField">Anzahl der Titel</label>
+      <input type="text" placeholder="Anzahl der Titel" id="tracksField" height="40" width="10">
+
+      <label for="cdsField">Anzahl der CDs</label>
+      <input type="text" placeholder="Anzahl der CDs" id="cdsField">
+
+
+    </div>
+
+    <div id="trackbox">
+      <div class="trackField">
+        <p>Track 01</p>
+        <button class="button button-clear">+</button>
+      </div>
+      <div class="trackField">
+        <p>Track 02</p>
+        <button class="button button-clear">+</button>
+      </div>
+      <div class="trackField">
+        <p>Track 03</p>
+        <button class="button button-clear">+</button>
+      </div>
+      <div class="trackField">
+        <p>Track 04</p>
+        <button class="button button-clear">+</button>
+      </div>
+    </div>
+
+    <div id="fussbereich">
+      <button class="button" id="saveButton">Speichern!</a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+</html>
