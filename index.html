@@ -111,6 +111,15 @@
       margin-left: 20px;
       font-size: 18px;
     }
+
+    .disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+
+      /*Button disabled - CSS color class*/
+      color: #c0c0c0;
+      background-color: #ffffff;
+    }
   </style>
 
 </head>
@@ -172,9 +181,9 @@
     </div>
 
     <div id="fussbereich">
-      <button class="button-primary" id="submit" onclick="submitClicked()">Speichern!</button>
-      <button id="authorize_button" style="display: none;">Authorize</button>
-      <button id="signout_button" style="display: none;">Sign Out</button>
+      <button class="disabled" id="submit" onclick="submitClicked()">Speichern!</button>
+      <button id="authorize_button" class="button-primary" style="display: none;">Einloggen</button>
+      <button id="signout_button" style="display: none;">Abmelden</button>
       <pre id="content"></pre>
     </div>
   </div>
