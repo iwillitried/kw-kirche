@@ -13,7 +13,6 @@ var artworkFile = "";
 var tasksToDo = 0;
 var tasksDone = 0;
 
-
 function reset() {
   nameField.value = "";
   artistField.value = "";
