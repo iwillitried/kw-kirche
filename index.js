@@ -1,4 +1,4 @@
-
+var uploading = false;
 const nameField = document.getElementById("albumTitelInput");
 const artistField = document.getElementById("artistField");
 const priceField = document.getElementById("priceField");
@@ -7,11 +7,112 @@ const tracksField = document.getElementById("tracksField");
 const cdsField = document.getElementById("cdsField");
 
 const submitButton = document.getElementById("submit"); // Listener to submitClicked() added in html
-const trackArray = [];
-const artworkFile = ""; 
+var trackArray = [];
+var artworkFile = "";
+
+var tasksToDo = 0;
+var tasksDone = 0;
+
+
+function reset() {
+  nameField.value = "";
+  artistField.value = "";
+  priceField.value = "";
+  durationField.value = "";
+  tracksField.value = "";
+  cdsField.value = "";
+  console.log("Reset. tracks: " + trackArray.length);
+  for (var i = 0; i < trackArray.length+1; i++) {
+    console.log("Track: "+ i);
+    removeTrackField(i);
+    console.log("Removed!");
+  }
+  trackArray = [];
+  artworkFile = "";
+  document.getElementById("artworkImage").src = "artwork_placeholder.jpeg"
+}
+
+function prepareProgressBar(tasksToDo) {
+  let progressBar = document.getElementById("progressBar");
+  progressBar.value = 0;
+  var tasksToDo = tasksToDo;
+  var tasksDone = 0;
+  progressBar.style = "display: inline;";
+}
+
+function progressDone() {
+  let progressBar = document.getElementById("progressBar");
+  tasksDone++;
+  progressBar.value = (tasksDone/tasksToDo)*100;
+  if (tasksDone == tasksToDo) {
+    progressBar.style = "display: none;";
+  }
+}
+
+
+function sec2time(timeInSeconds) {
+    var result = "";
+    var pad = function(num, size) { return ('000' + num).slice(size * -1); },
+    time = parseFloat(timeInSeconds).toFixed(3),
+    hours = Math.floor(time / 60 / 60),
+    minutes = Math.floor(time / 60) % 60,
+    seconds = Math.floor(time - minutes * 60),
+    milliseconds = time.slice(-3);
+
+    return pad(minutes, 2) + ':' + pad(seconds, 2)
+}
+
+function createSongArray() {
+  return new Promise(function(resolve, reject) {
+
+
+    var songsCounted = 0;
+    let songArray = [];
+
+    trackArray.forEach((item, i) => {
+      console.log("track "+ i + ":" + item.name);
+    });
+
+
+    trackArray.forEach((track, i) => {
+      // Calculate the track length
+      let reader = new FileReader();
+      reader.onload = function() {
+        let audio = new Audio(reader.result);
+        audio.oncanplaythrough = (event) => {
+          let duration = sec2time(audio.duration);
+          songArray.push({
+            "title" : track.name,
+            "length" : duration,
+            "file" : 'mp3/"'+nameField.value+'"/"'+track.name+'"'
+          });
+          songsCounted++;
+          console.log("trackArray.length-1:" + (trackArray.length-1));
+          console.log("songsCounted: "+ songsCounted);
+          console.log("(trackArray.length-1) == i : " + ((trackArray.length-1) == i));
+          // If this was the last song we can retrun
+          if ((trackArray.length) == songsCounted) {
+            console.log("resolving");
+            return resolve(songArray);
+          }
+        }
+      }
+      reader.readAsDataURL(track);
+    });
+  });
+}
 
 function removeTrackField(e) {
-  let trackNumber = e.target.id.charAt(0);
+
+  var trackNumber;
+  if (e.target) {
+    trackNumber = e.target.id.charAt(0)
+  } else {
+    trackNumber =  e;
+  }
+
+  console.log("Removing track: "+trackNumber);
+
   let trackbox = document.getElementById("trackbox");
   let trackField = document.getElementById(""+trackNumber+"trackField");
   trackbox.removeChild(trackField);
@@ -51,7 +152,7 @@ function handleTrackFiles(files) {
   trackField.appendChild(trackFieldButton);
   trackbox.appendChild(trackField);
   trackArray.push(file);
-
+  console.log("Pushed "+file.name+" on trackArray");
 }
 
 function handleArtworkFiles(files) {
@@ -63,41 +164,69 @@ function handleArtworkFiles(files) {
   }
   // replace the current artwork image with the new one
   let reader = new FileReader();
+  artworkFile = file;
   reader.onload = function() {
     let artworkImage = document.getElementById("artworkImage");
     let parent = artworkImage.parentNode;
     let newArtworkImage = artworkImage;
     newArtworkImage.src = reader.result;
-    artworkImageParent.replaceChild(newArtworkImage, artworkImage);
+    parent.replaceChild(newArtworkImage, artworkImage);
   }
   reader.readAsDataURL(file);
 }
 
 function submitClicked() {
   // If Button is disabled, ignore event
-  if (submitButton.className == "disabled") return;
+  if (submitButton.className == "disabled" || uploading) return;
+  uploading = true;
 
+  tasksToDo = trackArray.length + 4;
 
-  var data = {
-    "album" : {
-      "meta" : {
-        "name" : nameField.value,
-        "artist" : artistField.value,
-        "album_length" : durationField.value,
-        "album_songs" : tracksField.value,
-        "album_cds" : cdsField.value,
-        "price" : priceField.value
-      },
-      "songs" : {
-        "song" : []
+  prepareProgressBar(tasksToDo);
+
+  createSongArray()
+  .then(songArray => {
+    progressDone();
+    var data = {
+      "album" : {
+        "meta" : {
+          "name" : nameField.value,
+          "artist" : artistField.value,
+          "album_length" : durationField.value,
+          "album_songs" : tracksField.value,
+          "album_cds" : cdsField.value,
+          "price" : priceField.value
+        },
+        "songs" : {
+          "song" : songArray
+        }
       }
     }
-  }
+    createFolder(nameField.value)
+    .then(id => {
+      progressDone();
+      addAlbumDataToFolderWithID(id, JSON.stringify(data)).then(() => progressDone());
+      uploadMediaFileToFolderWithID(id, artworkFile).then(() => progressDone());
+      trackArray.forEach((track) => {
+        uploadMediaFileToFolderWithID(id, track).then(() => progressDone());
+      });
 
-  createFolder(nameField.value)
-  .then(id => addAlbumDataToFolderWithID(id, JSON.stringify(data)))
-  .then(/* do nothing */)
-  .catch(err => console.log("Error creating folder: \n"+ err));
+    })
+    .then(() => {
+      uploading = false;
+      reset();
+    })
+    .catch(err => {
+      uploading = false;
+      reset();
+      console.log("Error creating folder: \n"+ err);
+    });
+  });
+
+
+
+
+
 
 
 

@@ -163,6 +163,11 @@
       color: #c0c0c0;
       background-color: #ffffff;
     }
+
+    #progressBar {
+      display: none;
+    }
+
   </style>
 
 </head>
@@ -255,6 +260,7 @@
       <button class="disabled" id="submit" onclick="submitClicked()">Speichern!</button>
       <button id="authorize_button" class="button-primary" style="display: none;">Einloggen</button>
       <button id="signout_button" style="display: none;">Abmelden</button>
+      <progress id="progressBar" max=100 value=50></progress>
       <pre id="content"></pre>
     </div>
   </div>
