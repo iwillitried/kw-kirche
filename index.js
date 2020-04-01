@@ -52,6 +52,7 @@ function checkIfReadyForUpload() {
   if (!trackArray[0]) return "Audio Datei(en)";
   return;
 }
+
 function showProgressMessage(message) {
   let progressLabel = document.getElementById("progressLabel");
   progressLabel.style.display = "inline";
@@ -74,7 +75,7 @@ function prepareProgressBar(tasksToDo) {
 function progressDone() {
   let progressBar = document.getElementById("progressBar");
   tasksDone++;
-  progressBar.value = (tasksDone/tasksToDo)*100;
+  progressBar.value = (tasksDone / tasksToDo) * 100;
   if (tasksDone == tasksToDo) {
     progressBar.style = "display: none;";
   }
@@ -82,15 +83,17 @@ function progressDone() {
 
 
 function sec2time(timeInSeconds) {
-    var result = "";
-    var pad = function(num, size) { return ('000' + num).slice(size * -1); },
+  var result = "";
+  var pad = function(num, size) {
+      return ('000' + num).slice(size * -1);
+    },
     time = parseFloat(timeInSeconds).toFixed(3),
     hours = Math.floor(time / 60 / 60),
     minutes = Math.floor(time / 60) % 60,
     seconds = Math.floor(time - minutes * 60),
     milliseconds = time.slice(-3);
 
-    return pad(minutes, 2) + ':' + pad(seconds, 2)
+  return pad(minutes, 2) + ':' + pad(seconds, 2)
 }
 
 function createSongArray() {
@@ -101,7 +104,7 @@ function createSongArray() {
     let songArray = [];
 
     trackArray.forEach((item, i) => {
-      console.log("track "+ i + ":" + item.name);
+      console.log("track " + i + ":" + item.name);
     });
 
 
@@ -114,12 +117,12 @@ function createSongArray() {
         // adter loading audio track, let Audio() parse it
         let audio = new Audio(reader.result);
         audio.oncanplaythrough = (event) => {
-        // when it is parsed we can ask for the audio tracks duration
+          // when it is parsed we can ask for the audio tracks duration
           let duration = sec2time(audio.duration);
           songArray.push({
-            "title" : track.name,
-            "length" : duration,
-            "file" : 'mp3/"'+nameField.value+'"/"'+track.name+'"'
+            "title": track.name,
+            "length": duration,
+            "file": 'mp3/"' + nameField.value + '"/"' + track.name + '"'
           });
           // count how many tracks have been evaluated so far
           songsCounted++;
@@ -143,13 +146,13 @@ function removeTrackField(e) {
   if (e.target) {
     trackNumber = e.target.id.charAt(0)
   } else {
-    trackNumber =  e;
+    trackNumber = e;
   }
 
-  console.log("Removing track: "+trackNumber);
+  console.log("Removing track: " + trackNumber);
 
   let trackbox = document.getElementById("trackbox");
-  let trackField = document.getElementById(""+trackNumber+"trackField");
+  let trackField = document.getElementById("" + trackNumber + "trackField");
   trackbox.removeChild(trackField);
   // Remove file from array
   trackArray.splice(trackNumber, 1);
@@ -187,7 +190,7 @@ function handleTrackFiles(files) {
   trackField.appendChild(trackFieldButton);
   trackbox.appendChild(trackField);
   trackArray.push(file);
-  console.log("Pushed "+file.name+" on trackArray");
+  console.log("Pushed " + file.name + " on trackArray");
 }
 
 function handleArtworkFiles(files) {
@@ -227,51 +230,51 @@ function submitClicked() {
   showProgressMessage("Bereite Audio Dateien vor...")
 
   createSongArray()
-  .then(songArray => {
-    progressDone();
-    showProgressMessage("Erstelle Ordner: " + nameField.value)
+    .then(songArray => {
+      progressDone();
+      showProgressMessage("Erstelle Ordner: " + nameField.value)
 
-    var data = {
-      "album" : {
-        "meta" : {
-          "name" : nameField.value,
-          "artist" : artistField.value,
-          "album_length" : durationField.value,
-          "album_songs" : tracksField.value,
-          "album_cds" : cdsField.value,
-          "price" : priceField.value
-        },
-        "songs" : {
-          "song" : songArray
+      var data = {
+        "album": {
+          "meta": {
+            "name": nameField.value,
+            "artist": artistField.value,
+            "album_length": durationField.value,
+            "album_songs": tracksField.value,
+            "album_cds": cdsField.value,
+            "price": priceField.value
+          },
+          "songs": {
+            "song": songArray
+          }
         }
       }
-    }
-    createFolder(nameField.value)
-    .then(id => {
-      showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
-      progressDone();
-      addAlbumDataToFolderWithID(id, JSON.stringify(data)).then(() => progressDone());
-      uploadMediaFileToFolderWithID(id, artworkFile).then(() => {
-        progressDone();
-        uploadedCount++;
-        showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
-        if (uploadedCount == uploadsToDo) uploadCompleted();
-      });
-      trackArray.forEach((track) => {
-        uploadMediaFileToFolderWithID(id, track).then(() => {
-          uploadedCount++;
+      createFolder(nameField.value)
+        .then(id => {
           showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
-          if (uploadedCount == uploadsToDo) uploadCompleted();
-          progressDone()
-        });
-      });
+          progressDone();
+          addAlbumDataToFolderWithID(id, JSON.stringify(data)).then(() => progressDone());
+          uploadMediaFileToFolderWithID(id, artworkFile).then(() => {
+            progressDone();
+            uploadedCount++;
+            showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
+            if (uploadedCount == uploadsToDo) uploadCompleted();
+          });
+          trackArray.forEach((track) => {
+            uploadMediaFileToFolderWithID(id, track).then(() => {
+              uploadedCount++;
+              showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
+              if (uploadedCount == uploadsToDo) uploadCompleted();
+              progressDone()
+            });
+          });
 
-    })
-    .then(() => {})
-    .catch(err => {
-      console.log("Error creating folder: \n"+ err);
+        })
+        .then(() => {})
+        .catch(err => {
+          console.log("Error creating folder: \n" + err);
+        });
     });
-  });
 
 
 
