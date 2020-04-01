@@ -87,32 +87,11 @@ function appendPre(message) {
   pre.appendChild(textContent);
 }
 
-/**
- * Print files.
- */
-// function listFiles() {
-//   gapi.client.drive.files.list({
-//     'pageSize': 10,
-//     'fields': "nextPageToken, files(id, name)"
-//   }).then(function(response) {
-//     appendPre('Files:');
-//     var files = response.result.files;
-//     if (files && files.length > 0) {
-//       for (var i = 0; i < files.length; i++) {
-//         var file = files[i];
-//         appendPre(file.name + ' (' + file.id + ')');
-//       }
-//     } else {
-//       appendPre('No files found.');
-//     }
-//   });
-// }
+
 
 // Upload Test File
 function createFolder(name) {
   return new Promise(function(resolve, reject) {
-    console.log("Creating new folder: "+name);
-
     var parentId = '';//some parentId of a folder under which to create the new folder
     var fileMetadata = {
       'name' : name,
@@ -131,14 +110,11 @@ function createFolder(name) {
           break;
         }
     });
-    console.log("bye!");
   });
 }
 
 function addAlbumDataToFolderWithID(id, data) {
   return new Promise(function(resolve, reject) {
-
-    console.log("addAlbumDataToFolderWithID: parentID: "+ id);
     var fileContent = data; // As a sample, upload a text file.
     var file = new Blob([fileContent], {type: 'text/plain'});
     var metadata = {
@@ -203,6 +179,4 @@ function uploadMediaFileToFolderWithID(id, file) {
     };
     xhr.send(form);
   });
-
-
 }
