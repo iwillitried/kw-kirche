@@ -23,15 +23,17 @@
 
       display: grid;
       grid-template-columns: 1fr 350px;
-      grid-template-rows: 300px 1fr 50px;
+      grid-template-rows: 350px 1fr 50px;
+      /* grid-row-gap: 20px; */
     }
 
     #header {
       grid-column-start: 1;
       grid-column-end: 3;
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 2fr 1fr;
       grid-template-rows: 100px 1fr;
+      grid-row-gap: 20px;
       /* background-color:lightblue; */
 
 
@@ -49,45 +51,54 @@
       grid-column-end: 1;
     }
 
+    #head_left input {
+      width: 90%;
+    }
+
     #head_right {
       margin-left: 30px;
       grid-column-start: 2;
       grid-column-end: 2;
+      border-radius: 10px;
+
     }
 
     #head_right img {
-      width:150px;
-      height:150px;
+      width: 40%;
+      height: auto;
       float: right;
+      border: dotted 2px grey;
+      border-radius: 10px;
+
+
     }
 
-    #head_right button {
-      float: right;
+    #text_head_right {
+      width: 40%;
+      float: left;
+
     }
+
+    #artworkInput {
+      display: none;
+    }
+
 
     #main input {
       width: 90%;
+
     }
 
     #trackbox {
-      margin-left: 15px;
-      border: 1px solid grey;
+      margin-left: 0px;
+      margin-top: 10px;
       /* float: right;
       width:350px; */
       /* background-color: yellow; */
     }
 
-    #fussbereich {
-      clear: both;
-      width: auto;
-      margin-top: 30px;
-      /* background-color:darkblue; */
-      grid-column-start: 1;
-      grid-column-end: 1;
-    }
-
-    #fussbereich button {
-      display: inline;
+    .inputTrack {
+      display: none;
     }
 
 
@@ -96,20 +107,39 @@
     .trackField {
       height: 60px;
       border-bottom: 1px solid grey;
+      border: 1px solid grey;
     }
 
     .trackField button{
-      margin-right: 5px;
+
+
+      width: 20%;
+      /* display: inline; */
+      text-align: center;
       float: right;
+
       margin-top: 10px;
-      margin-left: 20px;
+      margin-bottom: 0px;
+      margin-right: 10px;
+
+
       font-size: 20px;
     }
     .trackField p {
+      width: 50%;
       float: left;
-      margin-top: 15px;
-      margin-left: 20px;
+      /* display: inline; */
+      /* margin-top: 15px; */
+      margin-top: 20px;
+      margin-bottom: 0px;
+      margin-left: 10px;
       font-size: 18px;
+    }
+
+    .outerTrackBox label {
+      display: block;
+      margin: 10px auto;
+
     }
 
     .disabled {
@@ -120,6 +150,31 @@
       color: #c0c0c0;
       background-color: #ffffff;
     }
+
+    #fussbereich {
+      clear: both;
+      width: auto;
+      margin-top: 30px;
+
+      grid-column-start: 1;
+      grid-column-end: 1;
+
+      display: grid;
+      grid-template-columns: 15% 15% 70%;
+      grid-column-gap: 5px;
+
+
+    }
+
+
+    #progressBar {
+      display: none;
+    }
+
+    #progressLabel {
+      display: none;
+    }
+
   </style>
 
 </head>
@@ -142,16 +197,13 @@
       </div>
 
       <div id="head_right">
-        <img src="artwork_placeholder.jpeg" alt="Artwork" style=" ">
-        <div id="file_picker">
-          <form action="upload.php" method="post" enctype="multipart/form-data">
-              <label>Albumcover wählen</label>
-              <input type="file" name="fileToUpload" id="fileToUpload">
-              <input type="submit" value="Bild verwenden" name="submit">
-          </form>
+        <div id="text_head_right">
+          <label>Albumcover</label>
+          <input type="file" id="artworkInput" multiple accept="image/*" onchange="handleArtworkFiles(this.files)">
+          <label class="button" for="artworkInput">Wählen</label>
         </div>
-      </div>
 
+        <img src="artwork_placeholder.jpeg" alt="Artwork" id="artworkImage">
     </div>
 
     <div id="main">
@@ -173,25 +225,35 @@
 
     </div>
 
-    <div id="trackbox">
-      <div class="trackField">
-        <p>Track 01</p>
-        <button class="button button-clear">+</button>
+    <div class="outerTrackBox">
+      <div id="trackbox">
+
+        <!-- <div class="trackField" id="1trackField">
+          <p>Track 01</p>
+
+          <button class="button button-clear" for="input_track">X</button>
+        </div> -->
+
       </div>
+      <input class ="inputTrack" type="file" id="trackInput" accept="audio/*" onchange="handleTrackFiles(this.files, this.id)">
+      <label class="button" for="trackInput">Track hinzufügen</label>
     </div>
 
+
     <div id="fussbereich">
+
       <button class="disabled" id="submit" onclick="submitClicked()">Speichern!</button>
       <button id="authorize_button" class="button-primary" style="display: none;">Einloggen</button>
       <button id="signout_button" style="display: none;">Abmelden</button>
+      <div>
+        <progress id="progressBar" max=100 value=50></progress>
+        <label id="progressLabel">Status</label>
+      </div>
+
+
       <pre id="content"></pre>
     </div>
   </div>
-
-
-
-
-
 
 
   <script src="index.js"></script>
