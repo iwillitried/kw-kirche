@@ -101,19 +101,6 @@
       display: none;
     }
 
-    #fussbereich {
-      clear: both;
-      width: auto;
-      margin-top: 30px;
-      /* background-color:darkblue; */
-      grid-column-start: 1;
-      grid-column-end: 1;
-    }
-
-    #fussbereich button {
-      display: inline;
-    }
-
 
 
 
@@ -164,7 +151,27 @@
       background-color: #ffffff;
     }
 
+    #fussbereich {
+      clear: both;
+      width: auto;
+      margin-top: 30px;
+
+      grid-column-start: 1;
+      grid-column-end: 1;
+
+      display: grid;
+      grid-template-columns: 15% 15% 70%;
+      grid-column-gap: 5px;
+
+
+    }
+
+
     #progressBar {
+      display: none;
+    }
+
+    #progressLabel {
       display: none;
     }
 
@@ -190,10 +197,6 @@
       </div>
 
       <div id="head_right">
-
-
-
-
         <div id="text_head_right">
           <label>Albumcover</label>
           <input type="file" id="artworkInput" multiple accept="image/*" onchange="handleArtworkFiles(this.files)">
@@ -201,25 +204,6 @@
         </div>
 
         <img src="artwork_placeholder.jpeg" alt="Artwork" id="artworkImage">
-
-        <!-- <form enctype="multipart/form-data" action="/upload/image" method="post">
-          <p>Per Drag & Drop <br>hinzufügen</p>
-          <label>Albumcover wählen</label>
-          <input id="image-file" type="file" onchange="handleArtworkFile(this.files)"/>
-        </form> -->
-
-        <!--
-        <div id="file_picker">
-
-
-          <form action="upload.php" method="post" enctype="multipart/form-data">
-
-              <input type="file" name="fileToUpload" id="fileToUpload">
-              <input type="submit" value="Bild verwenden" name="submit">
-          </form>
-        </div>
-      </div> -->
-
     </div>
 
     <div id="main">
@@ -257,18 +241,19 @@
 
 
     <div id="fussbereich">
+
       <button class="disabled" id="submit" onclick="submitClicked()">Speichern!</button>
       <button id="authorize_button" class="button-primary" style="display: none;">Einloggen</button>
       <button id="signout_button" style="display: none;">Abmelden</button>
-      <progress id="progressBar" max=100 value=50></progress>
+      <div>
+        <progress id="progressBar" max=100 value=50></progress>
+        <label id="progressLabel">Status</label>
+      </div>
+
+
       <pre id="content"></pre>
     </div>
   </div>
-
-
-
-
-
 
 
   <script src="index.js"></script>

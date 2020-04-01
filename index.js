@@ -8,7 +8,7 @@ const cdsField = document.getElementById("cdsField");
 
 const submitButton = document.getElementById("submit"); // Listener to submitClicked() added in html
 var trackArray = [];
-var artworkFile = "";
+var artworkFile = null;
 
 var tasksToDo = 0;
 var tasksDone = 0;
@@ -20,15 +20,47 @@ function reset() {
   durationField.value = "";
   tracksField.value = "";
   cdsField.value = "";
-  console.log("Reset. tracks: " + trackArray.length);
-  for (var i = 0; i < trackArray.length+1; i++) {
-    console.log("Track: "+ i);
-    removeTrackField(i);
-    console.log("Removed!");
-  }
+  // console.log("Reset. tracks: " + trackArray.length);
+  // for (var i = 0; i < trackArray.length+1; i++) {
+  //   console.log("Track: "+ i);
+  //   removeTrackField(i);
+  //   console.log("Removed!");
+  // }
+  document.getElementById("trackbox").innerHTML = "";
   trackArray = [];
   artworkFile = "";
   document.getElementById("artworkImage").src = "artwork_placeholder.jpeg"
+}
+
+function uploadCompleted() {
+  showProgressMessage("Alles geschafft!");
+  uploading = false;
+  reset();
+}
+
+// Checks if all the field are filled in
+// Return nil if everything is there
+// Otherwise returns a String with the missing component
+function checkIfReadyForUpload() {
+  if (!nameField.value) return "Albumtitel";
+  if (!artistField.value) return "Albumkünstler";
+  if (!priceField.value) return "Preis";
+  if (!durationField.value) return "Album Länge";
+  if (!tracksField.value) return "Anzahl der Titel";
+  if (!cdsField.value) return "Anzahl der CDs";
+  if (!artworkFile) return "Albumcover";
+  if (!trackArray[0]) return "Audio Datei(en)";
+  return;
+}
+function showProgressMessage(message) {
+  let progressLabel = document.getElementById("progressLabel");
+  progressLabel.style.display = "inline";
+  progressLabel.innerHTML = message;
+  console.log("Showing message: " + message);
+}
+
+function hideProgressLabel() {
+  progressLabel = document.getElementById("progressLabel").style.display = "none";
 }
 
 function prepareProgressBar(tasksToDo) {
@@ -36,7 +68,7 @@ function prepareProgressBar(tasksToDo) {
   progressBar.value = 0;
   var tasksToDo = tasksToDo;
   var tasksDone = 0;
-  progressBar.style = "display: inline;";
+  progressBar.style = "display: block;";
 }
 
 function progressDone() {
@@ -74,24 +106,28 @@ function createSongArray() {
 
 
     trackArray.forEach((track, i) => {
-      // Calculate the track length
+      // Calculates the audio track length (duration)
+      //
+      // first read the song file into memory
       let reader = new FileReader();
       reader.onload = function() {
+        // adter loading audio track, let Audio() parse it
         let audio = new Audio(reader.result);
         audio.oncanplaythrough = (event) => {
+        // when it is parsed we can ask for the audio tracks duration
           let duration = sec2time(audio.duration);
           songArray.push({
             "title" : track.name,
             "length" : duration,
             "file" : 'mp3/"'+nameField.value+'"/"'+track.name+'"'
           });
+          // count how many tracks have been evaluated so far
           songsCounted++;
-          console.log("trackArray.length-1:" + (trackArray.length-1));
-          console.log("songsCounted: "+ songsCounted);
-          console.log("(trackArray.length-1) == i : " + ((trackArray.length-1) == i));
+          // console.log("trackArray.length-1:" + (trackArray.length-1));
+          // console.log("songsCounted: "+ songsCounted);
+          // console.log("(trackArray.length-1) == i : " + ((trackArray.length-1) == i));
           // If this was the last song we can retrun
           if ((trackArray.length) == songsCounted) {
-            console.log("resolving");
             return resolve(songArray);
           }
         }
@@ -176,16 +212,25 @@ function handleArtworkFiles(files) {
 
 function submitClicked() {
   // If Button is disabled, ignore event
-  if (submitButton.className == "disabled" || uploading) return;
+  if (submitButton.className == "disabled" || uploading) return
+  let missing = checkIfReadyForUpload();
+  if (missing) {
+    showProgressMessage("Bitte füge noch ein: " + missing);
+    return;
+  }
+  hideProgressLabel();
   uploading = true;
-
   tasksToDo = trackArray.length + 4;
-
+  let uploadedCount = 0;
+  let uploadsToDo = trackArray.length + 1;
   prepareProgressBar(tasksToDo);
+  showProgressMessage("Bereite Audio Dateien vor...")
 
   createSongArray()
   .then(songArray => {
     progressDone();
+    showProgressMessage("Erstelle Ordner: " + nameField.value)
+
     var data = {
       "album" : {
         "meta" : {
@@ -203,21 +248,27 @@ function submitClicked() {
     }
     createFolder(nameField.value)
     .then(id => {
+      showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
       progressDone();
       addAlbumDataToFolderWithID(id, JSON.stringify(data)).then(() => progressDone());
-      uploadMediaFileToFolderWithID(id, artworkFile).then(() => progressDone());
+      uploadMediaFileToFolderWithID(id, artworkFile).then(() => {
+        progressDone();
+        uploadedCount++;
+        showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
+        if (uploadedCount == uploadsToDo) uploadCompleted();
+      });
       trackArray.forEach((track) => {
-        uploadMediaFileToFolderWithID(id, track).then(() => progressDone());
+        uploadMediaFileToFolderWithID(id, track).then(() => {
+          uploadedCount++;
+          showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");
+          if (uploadedCount == uploadsToDo) uploadCompleted();
+          progressDone()
+        });
       });
 
     })
-    .then(() => {
-      uploading = false;
-      reset();
-    })
+    .then(() => {})
     .catch(err => {
-      uploading = false;
-      reset();
       console.log("Error creating folder: \n"+ err);
     });
   });
