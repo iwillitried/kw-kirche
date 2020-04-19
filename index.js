@@ -232,18 +232,16 @@ function submitClicked() {
     showProgressMessage("Erstelle Ordner: " + nameField.value)
 
     var data = {
-      "album" : {
-        "meta" : {
-          "name" : nameField.value,
-          "artist" : artistField.value,
-          "album_length" : durationField.value,
-          "album_songs" : tracksField.value,
-          "album_cds" : cdsField.value,
-          "price" : priceField.value
-        },
-        "songs" : {
-          "song" : songArray
-        }
+      "meta" : {
+        "name" : nameField.value,
+        "artist" : artistField.value,
+        "album_length" : durationField.value,
+        "album_songs" : tracksField.value,
+        "album_cds" : cdsField.value,
+        "price" : priceField.value
+      },
+      "songs" : {
+        "song" : songArray
       }
     }
     createFolder(nameField.value)
