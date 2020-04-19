@@ -20,12 +20,6 @@ function reset() {
   durationField.value = "";
   tracksField.value = "";
   cdsField.value = "";
-  // console.log("Reset. tracks: " + trackArray.length);
-  // for (var i = 0; i < trackArray.length+1; i++) {
-  //   console.log("Track: "+ i);
-  //   removeTrackField(i);
-  //   console.log("Removed!");
-  // }
   document.getElementById("trackbox").innerHTML = "";
   trackArray = [];
   artworkFile = "";
@@ -119,13 +113,10 @@ function createSongArray() {
           songArray.push({
             "title" : track.name,
             "length" : duration,
-            "file" : 'mp3/"'+nameField.value+'"/"'+track.name+'"'
+            "file" : `mp3/'${nameField.value}'/'${track.name}'`
           });
           // count how many tracks have been evaluated so far
           songsCounted++;
-          // console.log("trackArray.length-1:" + (trackArray.length-1));
-          // console.log("songsCounted: "+ songsCounted);
-          // console.log("(trackArray.length-1) == i : " + ((trackArray.length-1) == i));
           // If this was the last song we can retrun
           if ((trackArray.length) == songsCounted) {
             return resolve(songArray);
@@ -232,18 +223,16 @@ function submitClicked() {
     showProgressMessage("Erstelle Ordner: " + nameField.value)
 
     var data = {
-      "album" : {
-        "meta" : {
-          "name" : nameField.value,
-          "artist" : artistField.value,
-          "album_length" : durationField.value,
-          "album_songs" : tracksField.value,
-          "album_cds" : cdsField.value,
-          "price" : priceField.value
-        },
-        "songs" : {
-          "song" : songArray
-        }
+      "meta" : {
+        "name" : nameField.value,
+        "artist" : artistField.value,
+        "album_length" : durationField.value,
+        "album_songs" : tracksField.value,
+        "album_cds" : cdsField.value,
+        "price" : priceField.value
+      },
+      "songs" : {
+        "song" : songArray
       }
     }
     createFolder(nameField.value)
@@ -272,36 +261,4 @@ function submitClicked() {
       console.log("Error creating folder: \n"+ err);
     });
   });
-
-
-
-
-
-
-
-
-  // googleAuth.signIn();
-  // initClient();
-
-  // var headers = {
-  //   "Authorization" : "Bearer ["+ACCESS_TOKEN+"]",
-  //   "Accept" : "application/json",
-  //   "Content-Type" : "application/json"
-  // }
-  //
-  // var options = {
-  //   "mimeType": "application/vnd.google-apps.folder",
-  //   "name": "New Folder!"
-  // }
-  //
-  // console.log("headers: \n"+headers);
-  // fetch("https://www.googleapis.com/drive/v3/files?key=["+GAPI_KEY+"]", {
-  //   method : "post",
-  //   headers : headers,
-  //   body : JSON.stringify(options)
-  // }).then( res => console.log(res))
-  // .catch( err => console.log(err));
-
-  // console.log(data);
-
 }
