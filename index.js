@@ -87,6 +87,7 @@ function sec2time(timeInSeconds) {
     return pad(minutes, 2) + ':' + pad(seconds, 2)
 }
 
+
 function createSongArray() {
   return new Promise(function(resolve, reject) {
 
@@ -94,9 +95,14 @@ function createSongArray() {
     var songsCounted = 0;
     let songArray = [];
 
-    trackArray.forEach((item, i) => {
-      console.log("track "+ i + ":" + item.name);
-    });
+    // let nameArray = []; // Holds the names of the tracks displayed to the user (whereas track.name is the file name the mp3 gets saved as)
+    let allTrackFields = document.getElementsByClassName("trackField");
+    for (var i = 0; i < allTrackFields.length; i++) {
+      trackArray[i].displayName = allTrackFields[i].querySelector("input").value;
+    }
+    // trackArray.forEach((item, i) => {
+    //   console.log("track "+ i + ":" + item.name);
+    // });
 
 
     trackArray.forEach((track, i) => {
@@ -111,9 +117,9 @@ function createSongArray() {
         // when it is parsed we can ask for the audio tracks duration
           let duration = sec2time(audio.duration);
           songArray.push({
-            "title" : track.name,
-            "length" : duration,
-            "file" : `mp3/'${nameField.value}'/'${track.name}'`
+            "title" : track.displayName+"",
+            "length" : duration+"",
+            "file" : `mp3/${nameField.value}/${track.name}`
           });
           // count how many tracks have been evaluated so far
           songsCounted++;
@@ -159,23 +165,35 @@ function handleTrackFiles(files) {
   // Build a TrackField
   let trackbox = document.getElementById("trackbox");
   let trackField = document.createElement("div");
-  let trackFieldP = document.createElement("P");
-  let trackFieldButton = document.createElement("BUTTON");
+  let trackFieldFilePathP = document.createElement("p");
+  let trackFieldFilePathLabel = document.createElement("label");
+  let trackFieldNameInput = document.createElement("input");
+  let trackFieldNameLabel = document.createElement("label");
+  let trackFieldButton = document.createElement("button");
   // Fill in Button and Label properties
-  trackFieldP.innerText = file.name;
-  trackFieldP.style = "width: 50%;float: left;margin-top: 20px;margin-bottom: 0px;margin-left: 10px;font-size: 18px;";
+  trackFieldFilePathP.innerText = file.name;
+  trackFieldFilePathLabel.innerHTML = "Datei:"
+  trackFieldNameInput.value = "Track "+(trackArray.length+1);
+  trackFieldNameLabel.innerHTML = "Name:";
+  // trackFieldFilePathP.style = "width: 50%;float: left;margin-top: 20px;margin-bottom: 0px;margin-left: 10px;font-size: 18px;";
   trackFieldButton.innerText = "X";
   trackFieldButton.id = trackArray.length + "trackFieldButton";
   trackFieldButton.addEventListener("click", removeTrackField);
-  trackFieldButton.style = "width: 20%;text-align: center;float: right;margin-top: 10px;margin-bottom: 0px;margin-right: 10px;font-size: 20px;";
+  // trackFieldButton.style = "width: 20%;text-align: center;float: right;margin-top: 10px;margin-bottom: 0px;margin-right: 10px;font-size: 20px;";
   // Fill in  TrackField properties
-  trackField.class = "trackField";
+  trackField.classList.add("trackField");
   trackField.id = "" + trackArray.length + "trackField";
-  trackField.style = "height: 60px;border-bottom: 1px solid grey;border: 1px solid grey;";
+  // trackField.style = "height: 60px;border-bottom: 1px solid grey;border: 1px solid grey;";
 
   // Add everything to the page and the file in the array
-  trackField.appendChild(trackFieldP);
+  trackField.appendChild(trackFieldNameLabel);
+  trackField.appendChild(trackFieldFilePathLabel);
   trackField.appendChild(trackFieldButton);
+  trackField.appendChild(trackFieldNameInput);
+  trackField.appendChild(trackFieldFilePathP);
+  trackField.file = file;
+
+
   trackbox.appendChild(trackField);
   trackArray.push(file);
   console.log("Pushed "+file.name+" on trackArray");
@@ -226,6 +244,7 @@ function submitClicked() {
       "meta" : {
         "name" : nameField.value,
         "artist" : artistField.value,
+        "artwork" : `mp3/${nameField.value}/${artworkFile.name}`,
         "album_length" : durationField.value,
         "album_songs" : tracksField.value,
         "album_cds" : cdsField.value,
@@ -235,6 +254,7 @@ function submitClicked() {
         "song" : songArray
       }
     }
+
     createFolder(nameField.value)
     .then(id => {
       showProgressMessage("Lade Dateien hoch " + uploadedCount + " von " + uploadsToDo + "...");

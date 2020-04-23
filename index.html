@@ -105,42 +105,76 @@
 
 
     .trackField {
-      height: 60px;
+      display: grid;
+      grid-template-columns: 50% 40% 10%;
+      grid-template-rows: 40% 60%;
+      height: 50px;
       border-bottom: 1px solid grey;
       border: 1px solid grey;
+      overflow-y: hidden;
     }
 
+    .trackField label {
+      width: auto;
+      font-size: 12px;
+      /* height: 50%; */
+
+
+    }
     .trackField button{
 
-
-      width: 20%;
+      /* grid-row-start: 0;
+      grid-row-end: 1;  */
+      width: 30px;
+      height: 52px;
       /* display: inline; */
       text-align: center;
-      float: right;
-
-      margin-top: 10px;
+      /* float: right; */
+      /* border: none; */
+      border-left: grey 10x solid;
+      border-right: none;
+      border-top: none;
+      border-bottom: none;
+      border-radius: 0px;
+      padding: 0px;
+      /* margin-top: 10px;
       margin-bottom: 0px;
-      margin-right: 10px;
+      margin-right: 10px; */
+      /* margin: 0px; */
 
-
-      font-size: 20px;
+      /* font-size: 20px; */
     }
     .trackField p {
-      width: 50%;
-      float: left;
+      /* width: 30%; */
+      /* float: right; */
+      text-overflow: ellipsis;
       /* display: inline; */
-      /* margin-top: 15px; */
-      margin-top: 20px;
-      margin-bottom: 0px;
-      margin-left: 10px;
-      font-size: 18px;
+      /* margin-top: 20px; */
+      /* margin-bottom: 0px; */
+      /* margin-left: 2px; */
+      /* margin-right: 2px; */
+      /* font-size: 18px; */
+      height: 80%;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
-    .outerTrackBox label {
-      display: block;
-      margin: 10px auto;
-
+    .trackField input {
+      height: 80%;
+      margin-right: 4px;
+      font-size: 14px; 
     }
+
+    /* .outerTrackBox {
+      /* display: block; */
+      /* height: 45% */
+      margin: 2px;
+      color: red;
+      font-size: 20px;
+      /* margin: 10px auto; */
+
+    } */
+
 
     .disabled {
       cursor: not-allowed;
